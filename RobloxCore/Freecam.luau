@@ -1188,12 +1188,6 @@ local function StartFreecam()
 		initializePlayerList()
 	end
 
-	if not FFlagUserFreecamGuiDestabilization then
-		if FFlagUserShowGuiHideToggles then
-			script:SetAttribute(FREECAM_ENABLED_ATTRIBUTE_NAME, true)
-		end
-	end
-
 	local cameraCFrame = Camera.CFrame
 	if FFlagUserFreecamTiltControl then
 		cameraRot = Vector3.new(cameraCFrame:toEulerAnglesYXZ())
@@ -1256,11 +1250,6 @@ local function StartFreecam()
 end
 
 local function StopFreecam()
-	if not FFlagUserFreecamGuiDestabilization then
-		if FFlagUserShowGuiHideToggles then
-			script:SetAttribute(FREECAM_ENABLED_ATTRIBUTE_NAME, false)
-		end
-	end
 
 	if FFlagUserFreecamPlayerLock then 
 		if playerAddedConnection then 
@@ -1323,9 +1312,6 @@ do
 			StartFreecam()
 		end
 		enabled = not enabled
-		if FFlagUserFreecamGuiDestabilization then
-			script:SetAttribute(FREECAM_ENABLED_ATTRIBUTE_NAME, enabled)
-		end
 	end
 
 	local function CheckMacro(macro)
@@ -1349,12 +1335,10 @@ do
 	ContextActionService:BindActionAtPriority("FreecamToggle", HandleActivationInput, false, TOGGLE_INPUT_PRIORITY, FREECAM_MACRO_KB[#FREECAM_MACRO_KB])
 
 	if FFlagUserFreecamGuiDestabilization or FFlagUserShowGuiHideToggles then
-		script:SetAttribute(FREECAM_ENABLED_ATTRIBUTE_NAME, enabled)
 		script:GetAttributeChangedSignal(FREECAM_ENABLED_ATTRIBUTE_NAME):Connect(function()
 			local attributeValue = script:GetAttribute(FREECAM_ENABLED_ATTRIBUTE_NAME)
 
 			if typeof(attributeValue) ~= "boolean" then
-				script:SetAttribute(FREECAM_ENABLED_ATTRIBUTE_NAME, enabled)
 				return
 			end
 
