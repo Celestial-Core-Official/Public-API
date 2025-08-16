@@ -224,10 +224,11 @@ function EspObject:Construct()
     
     self.bones = getBonesScreen(self.player.Character, getBones(self.player.Character))
     self.drawings.skeleton = {}
-    for _ = 1, #self.bones do
-        table.insert(self.drawings.skeleton, self:_create("Line", {Thickness=1, Visible=false}))
-    end
-
+	if self.bones then
+    	for _ = 1, #self.bones do
+        	table.insert(self.drawings.skeleton, self:_create("Line", {Thickness=1, Visible=false}))
+		end
+	end
 	self.renderConnection = RunService.Heartbeat:Connect(function(deltaTime)
 		self:Update(deltaTime)
 		self:Render(deltaTime)
