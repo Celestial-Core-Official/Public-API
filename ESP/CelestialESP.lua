@@ -470,6 +470,7 @@ end
 local EspInterface = {
 	_hasLoaded = false,
 	_objectCache = {},
+	userList = {},
 	mainSettings = {
 		textSize = 13,
 		textFont = 2,
@@ -560,13 +561,22 @@ function EspInterface.Load()
 		end
 	end
 
-	local plrs = Players:GetPlayers()
-	for i = 2, #plrs do
-		createObject(plrs[i])
-	end
+	local userList = EspInterface.userList
 
-	EspInterface.playerAdded = Players.PlayerAdded:Connect(createObject)
-	EspInterface.playerRemoving = Players.PlayerRemoving:Connect(removeObject)
+	if #userList == 0 then
+		local plrs = Players:GetPlayers()
+		for i = 2, #plrs do
+			createObject(plrs[i])
+		end
+
+		EspInterface.playerAdded = Players.PlayerAdded:Connect(createObject)
+		EspInterface.playerRemoving = Players.PlayerRemoving:Connect(removeObject)
+	else
+		local plrs = userList
+		for i = 1, #plrs do
+			createObject(plrs[i])
+		end
+	end
 	EspInterface._hasLoaded = true
 end
 
