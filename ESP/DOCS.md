@@ -6,9 +6,9 @@ Public ESP library, based on **Sense** by Sirius but lightweight and more stable
 ## How to use
 
 ```lua
-local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/Celestial-Core-Official/Public-API/refs/heads/main/ESP/CelestialESP.lua"))
+local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/Celestial-Core-Official/Public-API/refs/heads/main/ESP/CelestialESP.lua"))()
 
-ESP.humanoidSettings.enabled = true
+ESP.humanoidSettings.humanoid.enabled = true
 
 ESP:Load()
 
