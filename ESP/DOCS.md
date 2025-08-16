@@ -66,6 +66,10 @@ ESP = {
 			offScreenArrowRadius = 150,
 			offScreenArrowOutline = true,
 			offScreenArrowOutlineColor = { Color3.new(), 1 },
+			skeleton = false
+			skeletonColor = { Color3.new(0.117, 0.564, 1), 1 },
+			skeletonOutline = true
+			skeletonOutlineColor = { Color3.new(), 1}
 		},
 	}
 }

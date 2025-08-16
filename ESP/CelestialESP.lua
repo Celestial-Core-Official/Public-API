@@ -88,6 +88,74 @@ local function parseColor(self, color, isOutline)
 	return color
 end
 
+local function getBones(character)
+	local bodyConnections = {
+		R15 = {
+			{"Head", "UpperTorso"},
+			{"UpperTorso", "LowerTorso"},
+			{"LowerTorso", "LeftUpperLeg"},
+			{"LowerTorso", "RightUpperLeg"},
+			{"LeftUpperLeg", "LeftLowerLeg"},
+			{"LeftLowerLeg", "LeftFoot"},
+			{"RightUpperLeg", "RightLowerLeg"},
+			{"RightLowerLeg", "RightFoot"},
+			{"UpperTorso", "LeftUpperArm"},
+			{"UpperTorso", "RightUpperArm"},
+			{"LeftUpperArm", "LeftLowerArm"},
+			{"LeftLowerArm", "LeftHand"},
+			{"RightUpperArm", "RightLowerArm"},
+			{"RightLowerArm", "RightHand"}
+		},
+		R6 = {
+			{"Head", "Torso"},
+			{"Torso", "Left Arm"},
+			{"Torso", "Right Arm"},
+			{"Torso", "Left Leg"},
+			{"Torso", "Right Leg"}
+		}
+	}
+	if not character or not character:FindFirstChildOfClass("Humanoid") then
+		warn("No character found!")
+		return
+	end
+
+	local rigType = character:FindFirstChildOfClass("Humanoid").RigType == Enum.HumanoidRigType.R15 and "R15" or "R6"
+	local bones = {}
+	for _, part in ipairs(character:GetChildren()) do
+		if part:IsA("BasePart") then
+			bones[part.Name] = part
+		end
+	end
+
+	local connections = {}
+	for _, connection in pairs(bodyConnections[rigType]) do
+		local fromPart, toPart = connection[1], connection[2]
+		if bones[fromPart] and bones[toPart] then
+			table.insert(connections, {
+				From = bones[fromPart],
+				To = bones[toPart]
+			})
+		end
+	end
+
+	return connections
+end
+
+local function getBonesScreen(character, connections)
+    local bones = {}
+    for _, conn in ipairs(connections) do
+        local fromPos, fromVisible = worldToScreen(conn.From.Position)
+        local toPos, toVisible = worldToScreen(conn.To.Position)
+        if fromVisible or toVisible then
+            table.insert(bones, {
+                From = fromPos,
+                To = toPos
+            })
+        end
+    end
+    return bones
+end
+
 --==[ ESP OBJECT ]==--
 local EspObject = {}
 EspObject.__index = EspObject
@@ -113,7 +181,7 @@ function EspObject:Construct()
 	self.charCache = {}
 	self.childCount = 0
 	self.bin = {}
-	self.drawings = {
+ 	self.drawings = {
 		box3d = {
 			{
 				self:_create("Line", { Thickness = 1, Visible = false }),
@@ -153,6 +221,12 @@ function EspObject:Construct()
 			arrow = self:_create("Triangle", { Filled = true, Visible = false })
 		}
 	}
+    
+    self.bones = getBonesScreen(self.player.Character, getBones(self.player.Character))
+    self.drawings.skeleton = {}
+    for _ = 1, #self.bones do
+        table.insert(self.drawings.skeleton, self:_create("Line", {Thickness=1, Visible=false}))
+    end
 
 	self.renderConnection = RunService.Heartbeat:Connect(function(deltaTime)
 		self:Update(deltaTime)
@@ -224,9 +298,11 @@ function EspObject:Render()
 	local visible = self.drawings.visible
 	local hidden = self.drawings.hidden
 	local box3d = self.drawings.box3d
+	local skeleton = self.drawings.skeleton
 	local interface = self.interface
 	local options = self.options
 	local corners = self.corners
+	local bones = getBonesScreen(self.player.Character, getBones(self.player.Character))
 
 	visible.box.Visible = enabled and onScreen and options.box
 	visible.boxOutline.Visible = visible.box.Visible and options.boxOutline
@@ -353,8 +429,8 @@ function EspObject:Render()
 	local box3dEnabled = enabled and onScreen and options.box3d
 	for i = 1, #box3d do
 		local face = box3d[i]
-		for i2 = 1, #face do
-			local line = face[i2]
+		for j = 1, #face do
+			local line = face[j]
 			line.Visible = box3dEnabled
 			line.Color = parseColor(self, options.box3dColor[1])
 			line.Transparency = options.box3dColor[2]
@@ -374,6 +450,20 @@ function EspObject:Render()
 			line3.To = corners.corners[i == 4 and 8 or i+4]
 		end
 	end
+
+	local skeletonEnabled = enabled and onScreen and options.skeleton
+
+    for i = 1, #skeleton do
+        local line = skeleton[i]
+        line.Visible = skeletonEnabled
+        line.Color = parseColor(self, self.options.skeletonColor[1])
+        line.Transparency = self.options.skeletonColor[2]
+
+        if skeletonEnabled and bones[i] then
+            line.From = bones[i].From
+            line.To = bones[i].To
+        end
+    end
 end
 
 --==[ SETTINGS ]==--
@@ -426,6 +516,10 @@ local EspInterface = {
 			offScreenArrowRadius = 150,
 			offScreenArrowOutline = true,
 			offScreenArrowOutlineColor = { Color3.new(), 1 },
+			skeleton = false,
+			skeletonColor = { Color3.new(0.117, 0.564, 1), 1 },
+			skeletonOutline = true, -- not working as of now
+			skeletonOutlineColor = { Color3.new(), 1},
 		},
 	}
 }
@@ -448,7 +542,7 @@ function EspInterface.getHealth(player)
 end
 
 function EspInterface.Load()
-	assert(not EspInterface._hasLoaded, "Esp has already been loaded.")
+	assert(not EspInterface._hasLoaded, "ESP has already been loaded.")
 
 	local function createObject(player)
 		EspInterface._objectCache[player] = {
@@ -477,7 +571,7 @@ function EspInterface.Load()
 end
 
 function EspInterface.Unload()
-	assert(EspInterface._hasLoaded, "Esp has not been loaded yet.")
+	assert(EspInterface._hasLoaded, "ESP has not been loaded yet.")
 
 	for index, object in next, EspInterface._objectCache do
 		for i = 1, #object do
@@ -490,9 +584,5 @@ function EspInterface.Unload()
 	EspInterface.playerRemoving:Disconnect()
 	EspInterface._hasLoaded = false
 end
-
-EspInterface:Load()
-task.wait(3)
-EspInterface:Unload()
 
 return EspInterface
