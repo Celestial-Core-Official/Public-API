@@ -115,7 +115,6 @@ local function getBones(character)
 		}
 	}
 	if not character or not character:FindFirstChildOfClass("Humanoid") then
-		warn("No character found!")
 		return
 	end
 
@@ -143,6 +142,7 @@ end
 
 local function getBonesScreen(character, connections)
     local bones = {}
+	if not connections then return end
     for _, conn in ipairs(connections) do
         local fromPos, fromVisible = worldToScreen(conn.From.Position)
         local toPos, toVisible = worldToScreen(conn.To.Position)
