@@ -1333,28 +1333,6 @@ do
 	end
 
 	ContextActionService:BindActionAtPriority("FreecamToggle", HandleActivationInput, false, TOGGLE_INPUT_PRIORITY, FREECAM_MACRO_KB[#FREECAM_MACRO_KB])
-
-	if FFlagUserFreecamGuiDestabilization or FFlagUserShowGuiHideToggles then
-		script:GetAttributeChangedSignal(FREECAM_ENABLED_ATTRIBUTE_NAME):Connect(function()
-			local attributeValue = script:GetAttribute(FREECAM_ENABLED_ATTRIBUTE_NAME)
-
-			if typeof(attributeValue) ~= "boolean" then
-				return
-			end
-
-			-- If the attribute's value and `enabled` var don't match, pick attribute value as 
-			-- source of truth
-			if attributeValue ~= enabled then
-				if attributeValue then
-					StartFreecam()
-					enabled = true
-				else
-					StopFreecam()
-					enabled = false
-				end
-			end
-		end)
-	end
 end
 
 return {}
