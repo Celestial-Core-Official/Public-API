@@ -361,7 +361,7 @@ function EspObject:Render()
 		healthText.Transparency = options.healthTextColor[2]
 		healthText.Outline = options.healthTextOutline
 		healthText.OutlineColor = parseColor(self, options.healthTextOutlineColor, true)
-		healthText.Position = lerp2(barTo, barFrom, self.health/self.maxHealth) - healthText.TextBounds*0.5 - HEALTH_TEXT_OFFSET
+		healthText.Position = v2Lerp(barTo, barFrom, self.health/self.maxHealth) - healthText.TextBounds*0.5 - HEALTH_TEXT_OFFSET
 	end
 
 	visible.name.Visible = enabled and onScreen and options.name
@@ -413,7 +413,7 @@ function EspObject:Render()
 	hidden.arrowOutline.Visible = hidden.arrow.Visible and options.offScreenArrowOutline
 	if hidden.arrow.Visible and self.direction then
 		local arrow = hidden.arrow
-		arrow.PointA = min2(max2(ViewportSize*0.5 + self.direction*options.offScreenArrowRadius, Vector2.one*25), ViewportSize - Vector2.one*25)
+		arrow.PointA = v2Min(v2Max(ViewportSize*0.5 + self.direction*options.offScreenArrowRadius, Vector2.one*25), ViewportSize - Vector2.one*25)
 		arrow.PointB = arrow.PointA - rotateVector(self.direction, 0.45)*options.offScreenArrowSize
 		arrow.PointC = arrow.PointA - rotateVector(self.direction, -0.45)*options.offScreenArrowSize
 		arrow.Color = parseColor(self, options.offScreenArrowColor[1])
