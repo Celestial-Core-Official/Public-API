@@ -33,8 +33,9 @@ local function getClosestPlayer(aimbotSettings)
             end
         end
     end
-
-    aimbotSettings.MainSettings.Locked = closestPlayer
+    if not aimbotSettings.MainSettings.Locked then 
+        aimbotSettings.MainSettings.Locked = closestPlayer
+    end
 end
 
 local function endLock(aimbotSettings)
@@ -66,7 +67,7 @@ local Aimbot = {
         Enabled = false,
         Radius = 90, 
         Color = Color3.fromRGB(255, 255, 255),
-        LockedColor = Color3.fromRGB(255, 50, 50)
+        LockedColor = Color3.fromRGB(255, 100, 100)
     },
 }
 
