@@ -16,6 +16,11 @@ local Circle = Drawing.new("Circle")
 setrenderproperty(Circle, "Visible", false)
 
 local function getClosestPlayer(aimbotSettings)
+    if not running then
+        aimbotSettings.MainSettings.Locked = nil
+        return
+    end
+
     local closestPlayer, closestDistance = nil, math.huge
     for _, plr in ipairs(Players:GetPlayers()) do
         local character = plr.Character 
@@ -34,8 +39,10 @@ local function getClosestPlayer(aimbotSettings)
         end
     end
 
-    if not aimbotSettings.MainSettings.Locked then 
+    if running then
         aimbotSettings.MainSettings.Locked = closestPlayer
+    else
+        aimbotSettings.MainSettings.Locked = nil
     end
 end
 
