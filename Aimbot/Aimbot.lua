@@ -39,10 +39,8 @@ local function getClosestPlayer(aimbotSettings)
         end
     end
 
-    if running then
+    if not aimbotSettings.MainSettings.Locked  then
         aimbotSettings.MainSettings.Locked = closestPlayer
-    else
-        aimbotSettings.MainSettings.Locked = nil
     end
 end
 
