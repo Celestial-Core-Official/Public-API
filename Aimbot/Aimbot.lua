@@ -33,13 +33,14 @@ local function getClosestPlayer(aimbotSettings)
             end
         end
     end
+
     if not aimbotSettings.MainSettings.Locked then 
         aimbotSettings.MainSettings.Locked = closestPlayer
     end
 end
 
 local function endLock(aimbotSettings)
-    aimbotSettings.Locked = nil
+    aimbotSettings.MainSettings.Locked = nil
 
     setrenderproperty(Circle, "Color", aimbotSettings.CircleSettings.Color)
     UserInputService.MouseDeltaSensitivity = sens
