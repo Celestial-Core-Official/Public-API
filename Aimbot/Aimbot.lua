@@ -138,11 +138,4 @@ function Aimbot.Unload(self)
     setrenderproperty(Circle, "Visible", false)
 end
 
-Aimbot.MainSettings.Enabled = true
-Aimbot.CircleSettings.Enabled = true
-
-Aimbot:Load()
-task.wait(3)
-Aimbot:Unload()
-
 return Aimbot
