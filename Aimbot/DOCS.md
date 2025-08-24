@@ -23,7 +23,8 @@ Aimbot = {
         Enabled = false,
         LockMode = "CFrame", -- CFrame, Mouse
         TriggerKey = Enum.UserInputType.MouseButton2,
-        Toggle = false
+        Toggle = false,
+        SwitchTarget = false -- False = Switches when a person gets closer to mouse, True = stays on one person until u stop holding TriggerKey (even after death)
     },
     HumanoidSettings = {
         LockPart = "Head",

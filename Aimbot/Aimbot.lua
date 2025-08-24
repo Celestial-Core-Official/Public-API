@@ -22,6 +22,7 @@ local function getClosestPlayer(aimbotSettings)
     end
 
     local closestPlayer, closestDistance = nil, math.huge
+
     for _, plr in ipairs(Players:GetPlayers()) do
         local character = plr.Character 
         if not character then continue end
@@ -39,7 +40,7 @@ local function getClosestPlayer(aimbotSettings)
         end
     end
 
-    if not aimbotSettings.MainSettings.Locked  then
+    if not aimbotSettings.MainSettings.Locked or not aimbotSettings.MainSettings.SwitchTarget then
         aimbotSettings.MainSettings.Locked = closestPlayer
     end
 end
@@ -64,7 +65,8 @@ local Aimbot = {
         Enabled = false,
         LockMode = "CFrame", -- CFrame, Mouse
         TriggerKey = Enum.UserInputType.MouseButton2,
-        Toggle = false
+        Toggle = false,
+        SwitchTarget = false
     },
     HumanoidSettings = {
         LockPart = "Head",

@@ -339,7 +339,7 @@ function EspObject:Render()
 		local healthBar = visible.healthBar
 		healthBar.To = barTo
 		healthBar.From = v2Lerp(barTo, barFrom, self.health/self.maxHealth)
-		healthBar.Color = Color3.new(options.dyingColor, options.healthyColor, self.health/self.maxHealth)
+		healthBar.Color = options.healthyColor:Lerp(options.dyingColor, 1 - self.health/self.maxHealth)
 
 		local healthBarOutline = visible.healthBarOutline
 		healthBarOutline.To = barTo + HEALTH_BAR_OUTLINE_OFFSET
